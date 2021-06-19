@@ -5,10 +5,9 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const mongoose = require("mongoose");
 const healthcheck = require("./routes/api");
-const userRoute = require("./routes/userRoute");
+const auth = require("./routes/auth");
 const helmet = require("helmet");
-const { student } = require("./models/user");
-const { teacher } = require("./models/user");
+const { student, teacher } = require("./models/user");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
@@ -96,7 +95,7 @@ app.use(express.urlencoded({ extended: false }));
 // });
 
 app.use("/api", healthcheck);
-app.use("/user", userRoute);
+app.use("/api", auth);
 
 app.use((err, req, res, next) => {
   console.error(err);
