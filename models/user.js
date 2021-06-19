@@ -23,10 +23,6 @@ const studentSchema = mongoose.Schema(
       trim: true,
       unique: 1,
     },
-    password: {
-      type: String,
-      trim: true,
-    },
     batch: {
       type: String,
       trim: true,
@@ -65,6 +61,17 @@ const teacherSchema = mongoose.Schema(
       trim: true,
       unique: 1,
     },
+  },
+  { timestamps: true }
+);
+
+const userAuthSchema = mongoose.Schema(
+  {
+    email: {
+      type: String,
+      trim: true,
+      unique: 1,
+    },
     password: {
       type: String,
       trim: true,
@@ -73,7 +80,7 @@ const teacherSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-studentSchema.pre("save", function (next) {
+userAuthSchema.pre("save", function (next) {
   const user = this;
   if (this.isModified("password") || this.isNew) {
     bcrypt.genSalt(10, function (err, salt) {
@@ -93,36 +100,7 @@ studentSchema.pre("save", function (next) {
   }
 });
 
-studentSchema.methods.comparePassword = function (passw, cb) {
-  bcrypt.compare(passw, this.password, function (err, isMatch) {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, isMatch);
-  });
-};
-
-teacherSchema.pre("save", function (next) {
-  const user = this;
-  if (this.isModified("password") || this.isNew) {
-    bcrypt.genSalt(10, function (err, salt) {
-      if (err) {
-        return next(err);
-      }
-      bcrypt.hash(user.password, salt, function (err, hash) {
-        if (err) {
-          return next(err);
-        }
-        user.password = hash;
-        next();
-      });
-    });
-  } else {
-    return next();
-  }
-});
-
-teacherSchema.methods.comparePassword = function (passw, cb) {
+userAuthSchema.methods.comparePassword = function (passw, cb) {
   bcrypt.compare(passw, this.password, function (err, isMatch) {
     if (err) {
       return cb(err);
@@ -133,8 +111,10 @@ teacherSchema.methods.comparePassword = function (passw, cb) {
 
 const student = mongoose.model("student", studentSchema, "Users");
 const teacher = mongoose.model("teacher", teacherSchema, "Users");
+const authentication = mongoose.model("authentication", userAuthSchema,"Authentications");
 
 module.exports = {
   student: student,
   teacher: teacher,
+  authentication : authentication
 };
