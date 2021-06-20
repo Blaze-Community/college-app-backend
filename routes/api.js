@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { additem, myitem } = require('../controllers/buysell');
 var request = require('request');
 
 router.get("/", function(req,res){
@@ -21,5 +22,7 @@ router.get("/timtable", function(req,res){
   })
 });
 
+router.post("/additem",additem);
+router.get("/myitem",myitem);
 
 module.exports = router;
