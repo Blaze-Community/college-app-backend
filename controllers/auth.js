@@ -12,7 +12,7 @@ exports.register = (req, res) => {
 	        return res.status(400).json({ error });
 	    }
 	    if (existingUser) {
-	        return res.status(400).json({ error: "User with that email already exist"});
+	        return res.status(400).json({ error: "User with that email already exist",existingUser:existingUser});
 	    }
 	    else{
 	    	if (user.role === "student") {
