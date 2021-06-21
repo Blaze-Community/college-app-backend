@@ -1,14 +1,13 @@
 const express = require("express");
-const { student, teacher , authentication } = require("../models/user");
+const { collegeUser } = require("../models/user");
 const jwt = require("jwt-simple");
-const router = express.Router();
 
 const secretKey = "secret";
 
 exports.register = (req, res) => {
 	const { user } = req.body;
     let newUser;
-   	student.findOne({ email: user.email }).exec((error, existingUser) => {
+   	collegeUser.findOne({ email: user.email }).exec((error, existingUser) => {
 	    if (error) {
 	        return res.status(400).json({ error });
 	    }
@@ -17,7 +16,7 @@ exports.register = (req, res) => {
 	    }
 	    else{
 	    	if (user.role === "student") {
-		      newUser = student({
+		      newUser = collegeUser({
 		        profileName: user.profileName,
 		        profilePhotoUri: user.profilePhotoUri,
 		        e_card: user.e_card,
@@ -31,7 +30,7 @@ exports.register = (req, res) => {
 		      });
 	    	}
 				 else {
-		      newUser = teacher({
+		      newUser = collegeUser({
 		        profileName: user.profileName,
 		        profilePhotoUri: user.profilePhotoUri,
 		        role: user.role,
@@ -40,14 +39,6 @@ exports.register = (req, res) => {
 		      });
 				}
 	    }
-    authUser = authentication({
-		  email: user.email,
-		  password: user.password,
-    });
-    authUser.save((err, authUser) => {
-      if (err) {
-        return res.status(400).json({ success: false, msg: "Failed to save in Authentication" });
-      } else {
             newUser.save((err, newUser) => {
 			      if (err) {
 			        res.status(400).json({ success: false, msg: "Failed to save in Users" });
@@ -55,14 +46,12 @@ exports.register = (req, res) => {
 			        res.status(200).json({ success: true, msg: "Successfully saved"});
 			      }
 			    });
-      	}
-    });
   });
 };
 
 exports.login = (req, res) => {
 	const { user } = req.body;
-			authentication.findOne(
+			collegeUser.findOne(
 	      {
 	        email: user.email,
 	      },

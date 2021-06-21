@@ -1,7 +1,16 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const studentSchema = mongoose.Schema(
+const userSchema = mongoose.Schema(
   {
+    email: {
+      type: String,
+      trim: true,
+      unique: 1,
+    },
+    password: {
+      type: String,
+      trim: true,
+    },
     profileName: {
       type: String,
       trim: true,
@@ -18,15 +27,6 @@ const studentSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    email: {
-      type: String,
-      trim: true,
-      unique: 1,
-    },
-    batch: {
-      type: String,
-      trim: true,
-    },
     rollno: {
       type: String,
       trim: true,
@@ -39,48 +39,16 @@ const studentSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-  },
-  { timestamps: true }
-);
-const teacherSchema = mongoose.Schema(
-  {
-    profileName: {
+    batch: {
       type: String,
       trim: true,
     },
-    profilePhotoUri: {
-      type: String,
-      trim: true,
-    },
-    role: {
-      type: String,
-      trim: true,
-    },
-    email: {
-      type: String,
-      trim: true,
-      unique: 1,
-    },
+
   },
   { timestamps: true }
 );
 
-const userAuthSchema = mongoose.Schema(
-  {
-    email: {
-      type: String,
-      trim: true,
-      unique: 1,
-    },
-    password: {
-      type: String,
-      trim: true,
-    },
-  },
-  { timestamps: true }
-);
-
-userAuthSchema.pre("save", function (next) {
+userSchema.pre("save", function (next) {
   const user = this;
   if (this.isModified("password") || this.isNew) {
     bcrypt.genSalt(10, function (err, salt) {
@@ -100,7 +68,7 @@ userAuthSchema.pre("save", function (next) {
   }
 });
 
-userAuthSchema.methods.comparePassword = function (passw, cb) {
+userSchema.methods.comparePassword = function (passw, cb) {
   bcrypt.compare(passw, this.password, function (err, isMatch) {
     if (err) {
       return cb(err);
@@ -109,12 +77,8 @@ userAuthSchema.methods.comparePassword = function (passw, cb) {
   });
 };
 
-const student = mongoose.model("student", studentSchema, "Users");
-const teacher = mongoose.model("teacher", teacherSchema, "Users");
-const authentication = mongoose.model("authentication", userAuthSchema,"Authentications");
+const collegeUser = mongoose.model("collegeUser", userSchema, "Users");
 
 module.exports = {
-  student: student,
-  teacher: teacher,
-  authentication : authentication
+  collegeUser:collegeUser
 };

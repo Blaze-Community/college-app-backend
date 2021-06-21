@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const healthcheck = require("./routes/api");
 const auth = require("./routes/auth");
+const clas = require("./routes/class");
 const helmet = require("helmet");
 const { student, teacher } = require("./models/user");
 const bodyParser = require("body-parser");
@@ -96,6 +97,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api", healthcheck);
 app.use("/api", auth);
+app.use("/api", clas);
 
 app.use((err, req, res, next) => {
   console.error(err);
