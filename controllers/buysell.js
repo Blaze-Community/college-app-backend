@@ -15,6 +15,7 @@ exports.addItem = (req ,res) => {
     });
     newItem.save(function(err,item){
         if(err){
+            console.log(err);
             res.status(400).json({ success: false, msg: "Failed to save the item" });
         }
         else{
@@ -36,3 +37,29 @@ exports.myItems = (req ,res) => {
         }
     });
 };
+
+exports.allItems = (req , res) => {
+    buysell.find({}).exec((err,list) => {
+        if(err){
+            console.log(err);
+            res.status(400).json({ success: false, msg: "Failed to retrive the item" });
+        }
+        else{
+           res.status(200).json({ success: true, msg: "Successfully retrived all items",list:list});
+        }
+    });
+}
+
+exports.deleteItem = (req, res) => {
+    const itemId = req.body.id;
+    console.log(itemId);
+    buysell.findByIdAndDelete({_id:itemId}).exec((err) => {
+        if(err){
+            console.log(err);
+            res.status(400).json({ success: false, msg: "Failed to delete the item" });
+        }
+        else{
+           res.status(200).json({ success: true, msg: "Successfully deleted item"});
+        }
+    })
+}

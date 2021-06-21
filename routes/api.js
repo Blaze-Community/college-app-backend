@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { addItem, myItems } = require('../controllers/buysell');
+const { addItem, myItems , allItems,deleteItem } = require('../controllers/buysell');
 var request = require('request');
 
 router.get("/", function(req,res){
@@ -24,5 +24,8 @@ router.get("/timtable", function(req,res){
 
 router.post("/additem",addItem);
 router.get("/myitem",myItems);
+router.get("/allitems",allItems);
+router.post("/deleteitem",deleteItem);
+
 
 module.exports = router;
