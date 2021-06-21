@@ -9,10 +9,6 @@ const buysellSchema = mongoose.Schema(
             type: String,
             trim: true,
         },
-        itemPrice: {
-            type: String,
-            trim: true,
-        },
         sellerName: {
             type: String,
             trim: true,
@@ -26,16 +22,12 @@ const buysellSchema = mongoose.Schema(
             type: String,
             trim: true,
         },
-        uid: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
+        email: {
+            type: String,
+            trim: true,
         },
     },
     { timestamps: true }
 );
-var student = mongoose.model('student', studentSchema, 'Users');
-
-module.exports = {
-  student:student,
-  teacher:teacher
-}
+const buysell =   mongoose.model('buysell', buysellSchema);
+module.exports = buysell;
