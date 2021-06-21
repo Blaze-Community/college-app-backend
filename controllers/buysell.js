@@ -2,8 +2,8 @@ const express = require("express");
 const buysell = require("../models/buysell");
 
 exports.addItem = (req ,res) => {
-    const { item } = req.body;
-    console.log(item);
+    const item  = req.body;
+    // console.log(item);
     let newItem = buysell({
         itemName:item.itemName,
         itemPrice:item.itemPrice,
@@ -25,15 +25,14 @@ exports.addItem = (req ,res) => {
 };
 
 exports.myItems = (req ,res) => {
-    const  email = req.body.email;
-    let sellItemList;
+    const  email = req.headers.email;
     buysell.find({email: email}).exec((err,list) => {
         if(err)
         {
             res.status(400).json({ err });
         }
         else 
-        {   res.status(200).json({ success: true, msg: "Successfully saved",list:list});
+        {   res.status(200).json(list);
         }
     });
 };
@@ -45,7 +44,7 @@ exports.allItems = (req , res) => {
             res.status(400).json({ success: false, msg: "Failed to retrive the item" });
         }
         else{
-           res.status(200).json({ success: true, msg: "Successfully retrived all items",list:list});
+           res.status(200).send(list);
         }
     });
 }
