@@ -9,6 +9,10 @@ const buysellSchema = mongoose.Schema(
             type: String,
             trim: true,
         },
+        itemImageUri:{
+            type: String,
+            trim: true,
+        },
         sellerName: {
             type: String,
             trim: true,
@@ -16,7 +20,6 @@ const buysellSchema = mongoose.Schema(
         sellerRoom: {
             type: String,
             trim: true,
-            unique: 1,
         },
         sellerContact: {
             type: String,
@@ -29,5 +32,5 @@ const buysellSchema = mongoose.Schema(
     },
     { timestamps: true }
 );
-const buysell =   mongoose.model('buysell', buysellSchema);
+const buysell =   mongoose.model('buysell', buysellSchema,'College-Olx');
 module.exports = buysell;

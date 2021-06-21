@@ -1,36 +1,38 @@
 const express = require("express");
-const { buysell } = require("../models/buysell");
-const router = express.Router();
-
-const secretKey = "secret";
+const buysell = require("../models/buysell");
 
 exports.addItem = (req ,res) => {
-    console.log(req.body)
     const { item } = req.body;
-    let newItem = buysell(item);
-    newItem.save(function(err,items){
+    console.log(item);
+    let newItem = buysell({
+        itemName:item.itemName,
+        itemPrice:item.itemPrice,
+        itemImageUri:item.itemImageUri,
+        sellerName:item.sellerName,
+        sellerRoom:item.sellerRoom,
+        sellerContact:item.sellerContact,
+        email:item.email
+    });
+    newItem.save(function(err,item){
         if(err){
-            console.log("error occured");}
+            res.status(400).json({ success: false, msg: "Failed to save the item" });
+        }
         else{
-            console.log("item added succedully");
-            console.log(items );
+           res.status(200).json({ success: true, msg: "Successfully Added",item:item});
         }
     });
 };
 
-exports.myItem = (req ,res) => {
-    const { user } = req.body;
-    let myitemarr;
-    buysell.find({email: user.email}).exec((err,arr) => {
+exports.myItems = (req ,res) => {
+    const  email = req.body.email;
+    let sellItemList;
+    buysell.find({email: email}).exec((err,list) => {
         if(err)
         {
-            console.log("error occured");
+            res.status(400).json({ err });
         }
-        if(arr)
-        {   console.log("some items are found");
-            myitemarr = arr;
+        else 
+        {   res.status(200).json({ success: true, msg: "Successfully saved",list:list});
         }
-    })
-
-    return myitemarr;
+    });
 };
