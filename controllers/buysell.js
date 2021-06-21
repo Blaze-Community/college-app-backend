@@ -4,10 +4,11 @@ const router = express.Router();
 
 const secretKey = "secret";
 
-exports.additem = (req ,res) => {
+exports.addItem = (req ,res) => {
     console.log(req.body)
     const { item } = req.body;
-    buysell.create(item,function(err,items){
+    let newItem = buysell(item);
+    newItem.save(function(err,items){
         if(err){
             console.log("error occured");}
         else{
@@ -17,7 +18,7 @@ exports.additem = (req ,res) => {
     });
 };
 
-exports.myitem = (req ,res) => {
+exports.myItem = (req ,res) => {
     const { user } = req.body;
     let myitemarr;
     buysell.find({email: user.email}).exec((err,arr) => {
