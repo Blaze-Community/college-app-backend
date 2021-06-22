@@ -44,7 +44,7 @@ exports.joinClass = (req, res) =>	{
    };
 
 exports.studentClasses = (req, res) =>	{
-		const studentId = req.body.studentId;
+		const studentId = req.params.studentId;
 		classroom.find({enrollStudents:studentId}).populate("collegeUser").exec((error, studentClasses) => {
 			if (error) {
 	        	 res.status(400).json({ error });
@@ -55,7 +55,7 @@ exports.studentClasses = (req, res) =>	{
 		});
    };
 exports.teacherClasses = (req, res) =>	{
-		const teacherId = req.body.teacherId;
+		const teacherId = req.params.teacherId;
 		classroom.find({createdBy:teacherId}).populate("collegeUser").exec((error, teacherClasses) => {
 			if (error) {
 	        	 res.status(400).json({ error });
@@ -108,7 +108,7 @@ exports.uploadResult = (req, res) =>	{
    };
 exports.classAssignments = (req, res) =>	{
 
-		const classId = req.body.classId;
+		const classId = req.params.classId;
 		classroom.findById(classId).exec((error, existingClass) =>{
 			if (error) {
 	        	 res.status(400).json({ error });
@@ -121,7 +121,7 @@ exports.classAssignments = (req, res) =>	{
    };
 exports.classResults = (req, res) =>	{
 
-		const classId = req.body.classId;
+		const classId = req.params.classId;
 		classroom.findById(classId).exec((error, existingClass) =>{
 			if (error) {
 	        	 res.status(400).json({ error });

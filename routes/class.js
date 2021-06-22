@@ -5,12 +5,12 @@ const router = express.Router();
 
 router.post("/createClass",isRequestValidated, createClass);
 router.post("/joinClass",isRequestValidated, joinClass);
-router.get("/studentClasses",isRequestValidated, studentClasses);
-router.get("/teacherClasses",isRequestValidated, teacherClasses);
+router.get("/studentClasses/:studentId",isRequestValidated, studentClasses);
+router.get("/teacherClasses/:teacherId",isRequestValidated, teacherClasses);
 router.post("/uploadAssignment",isRequestValidated, uploadAssignment);
 router.post("/uploadResult",isRequestValidated, uploadResult);
-router.get("/classAssignments",isRequestValidated, classAssignments);
-router.get("/classResults",isRequestValidated, classResults);
+router.get("/classAssignments/:classId",isRequestValidated, classAssignments);
+router.get("/classResults/:classId",isRequestValidated, classResults);
 router.delete("/deleteClass",isRequestValidated, deleteClass);
 
 module.exports = router;
