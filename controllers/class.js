@@ -65,3 +65,82 @@ exports.teacherClasses = (req, res) =>	{
 	    	}
 		});
    };
+
+exports.uploadAssignment = (req, res) =>	{
+
+		const { assignment } = req.body;
+		const classId = req.body.classId;
+		classroom.findById(classId).exec((error, existingClass) =>{
+			if (error) {
+	        	 res.status(400).json({ error });
+	    	}
+	    	else{
+	    		existingClass.assignments.push(assignment);
+			    existingClass.save((err, updateClass) => {
+					if (err) {
+					    res.status(400).json({ success: false, msg: "Failed to upload the assignment" });
+					} else {
+						res.status(200).json({ success: true, msg: "Assignment Upload Successfully",existingClass: existingClass});
+					    }
+				});
+	    	}
+		});
+   };
+exports.uploadResult = (req, res) =>	{
+
+		const { result } = req.body;
+		const classId = req.body.classId;
+		classroom.findById(classId).exec((error, existingClass) =>{
+			if (error) {
+	        	 res.status(400).json({ error });
+	    	}
+	    	else{
+	    		existingClass.results.push(result);
+			    existingClass.save((err, updateClass) => {
+					if (err) {
+					    res.status(400).json({ success: false, msg: "Failed to upload the result" });
+					} else {
+						res.status(200).json({ success: true, msg: "Result Upload Successfully",existingClass: existingClass});
+					    }
+				});
+	    	}
+		});
+   };
+exports.classAssignments = (req, res) =>	{
+
+		const classId = req.body.classId;
+		classroom.findById(classId).exec((error, existingClass) =>{
+			if (error) {
+	        	 res.status(400).json({ error });
+	    	}
+	    	else{
+	    		let assignmentList = existingClass.assignments;
+				res.status(200).json({ success: true, msg: "Assignments fetch Successfully",assignmentList:assignmentList});
+	    	}
+		});
+   };
+exports.classResults = (req, res) =>	{
+
+		const classId = req.body.classId;
+		classroom.findById(classId).exec((error, existingClass) =>{
+			if (error) {
+	        	 res.status(400).json({ error });
+	    	}
+	    	else{
+	    		let resultList = existingClass.results;
+				res.status(200).json({ success: true, msg: "Assignments fetch Successfully",resultList:resultList});
+	    	}
+		});
+   };
+
+exports.deleteClass = (req, res) =>	{
+		const classId = req.body.classId;
+		classroom.findByIdAndDelete(classId).exec((error, deleteClass) =>{
+			if (error) {
+	        	 res.status(400).json({ error });
+	    	}
+	    	else{
+				res.status(200).json({ success: true, msg: "Class delete Successfully"});
+	    	}
+		});
+   };
