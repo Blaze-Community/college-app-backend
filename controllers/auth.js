@@ -1,8 +1,6 @@
 const express = require("express");
 const { collegeUser } = require("../models/user");
-const jwt = require("jwt-simple");
-
-const secretKey = "secret";
+const jwt = require("jsonwebtoken");
 
 exports.register = (req, res) => {
     const { user } = req.body;
@@ -72,8 +70,25 @@ exports.login = (req, res) => {
             } else {
                 userFound.comparePassword(user.password, (err, isMatch) => {
                     if (isMatch && !err) {
-                        const token = jwt.encode(userFound, secretKey);
-                        res.json({ success: true, token: token });
+                        const accessToken = jwt.sign(
+                            { email: userFound.email },
+                            process.env.ACCESS_TOKEN_SECRET,
+                            {
+                                expiresIn: "600s",
+                            }
+                        );
+                        const refreshToken = jwt.sign(
+                            { email: userFound.email },
+                            process.env.REFRESH_TOKEN_SECRET,
+                            {
+                                expiresIn: "7d",
+                            }
+                        );
+                        res.json({
+                            success: true,
+                            accessToken: accessToken,
+                            refreshToken: refreshToken,
+                        });
                     } else {
                         return res.status(400).send({
                             success: false,
@@ -86,8 +101,44 @@ exports.login = (req, res) => {
     );
 };
 
+exports.refresh = (req, res, next) => {
+    const refreshToken = req.body.token;
+    if (!refreshToken) {
+        return res.json({ message: "Refresh token not found." });
+    }
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (!err) {
+            const accessToken = jwt.sign(
+                { email: user.email },
+                process.env.ACCESS_TOKEN_SECRET,
+                {
+                    expiresIn: "600s",
+                }
+            );
+            return res.json({ success: true, accessToken: accessToken });
+        } else {
+            return res.json({
+                success: false,
+                message: "invalid refresh token",
+            });
+        }
+    });
+};
+
 exports.getInfo = (req, res) => {
-    res.send(req.user);
+    console.log(req.user);
+    collegeUser.findOne({ email: req.user.email }, (err, userFound) => {
+        if (err) throw err;
+        if (!userFound) {
+            res.status(400).send({
+                success: false,
+                message: "User not found",
+            });
+        } else {
+            res.send(userFound);
+        }
+    });
 };
 
 exports.editProfile = (req, res) => {
@@ -98,11 +149,12 @@ exports.editProfile = (req, res) => {
         },
     };
     collegeUser.updateOne({ email: req.user.email }, newValues, (err, res) => {
-        if (err) throw err;
-        console.log("profile updated");
+        if (err) {
+            throw err;
+        }
     });
     res.send({
-        status: "profile updated",
+        succes: true,
         info: {
             profileName: req.body.profileName,
             profilePhotoUri: req.body.profilePhotoUri,
