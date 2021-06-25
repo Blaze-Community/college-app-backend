@@ -45,7 +45,7 @@ const classSchema = mongoose.Schema(
 	    results:[resultSchema],
 	    enrollStudents:[{
 	    	type: mongoose.Schema.Types.ObjectId,
-            ref: "collegeUser",
+        ref: "collegeUser",
 	    }],
 	    subject: {
 	      type: String,
@@ -61,7 +61,7 @@ const classSchema = mongoose.Schema(
 	    },
 	   	createdBy: {
 	    	type: mongoose.Schema.Types.ObjectId,
-            ref: "collegeUser",
+        ref: "collegeUser",
 	    },
 
 	},
