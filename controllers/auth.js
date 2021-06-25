@@ -2,8 +2,8 @@ const express = require("express");
 const { collegeUser } = require("../models/user");
 const jwt = require("jsonwebtoken");
 
-// const ACCESS_TOKEN_SECRET = "thisIsAccessTokenSecretKey";
-// const REFRESH_TOKEN_SECRET = "thisIsRefreshTokenSecretKey";
+const ACCESS_TOKEN_SECRET = "thisIsAccessTokenSecretKey";
+const REFRESH_TOKEN_SECRET = "thisIsRefreshTokenSecretKey";
 
 exports.register = (req, res) => {
     const { user } = req.body;
@@ -75,14 +75,14 @@ exports.login = (req, res) => {
                     if (isMatch && !err) {
                         const accessToken = jwt.sign(
                             { email: userFound.email },
-                            process.env.ACCESS_TOKEN_SECRET,
+                            ACCESS_TOKEN_SECRET,
                             {
                                 expiresIn: "600s",
                             }
                         );
                         const refreshToken = jwt.sign(
                             { email: userFound.email },
-                            process.env.REFRESH_TOKEN_SECRET,
+                            REFRESH_TOKEN_SECRET,
                             {
                                 expiresIn: "1y",
                             }
@@ -110,11 +110,11 @@ exports.refresh = (req, res, next) => {
         return res.json({ success: false, msg: "Refresh token not found." });
     }
 
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
         if (!err) {
             const accessToken = jwt.sign(
                 { email: user.email },
-                process.env.ACCESS_TOKEN_SECRET,
+                ACCESS_TOKEN_SECRET,
                 {
                     expiresIn: "600s",
                 }
