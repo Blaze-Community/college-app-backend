@@ -104,8 +104,8 @@ app.use((err, req, res, next) => {
   res.status(422).send({ success: false, error: err.message });
 });
 
-const http = require("http").createServer(app);
+const server = require("http").createServer(app);
 
-http.listen(port, () => {
+server.listen(port, () => {
   console.log("Server has started! on http://localhost:" + port + "/");
 });

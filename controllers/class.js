@@ -3,6 +3,7 @@ const { classroom } = require("../models/class");
 const { v4: uuidv4 } = require("uuid");
 
 exports.createClass = (req, res) =>	{
+	    console.log(req.body);
 		const { clas } = req.body;
     	let newClass;
 	    let enrolKey = uuidv4();
@@ -16,9 +17,9 @@ exports.createClass = (req, res) =>	{
 		});
 		newClass.save((err, newClass) => {
 			if (err) {
-			    res.status(400).json({ success: false, msg: "Failed to create the class" });
+			    res.status(400).json({ error:err, success: false, msg: "Failed to create the class" });
 			} else {
-				res.status(200).json({ success: true, msg: "Successfully created",class: newClass});
+				res.status(200).json({ success: true, msg: "Successfully created"});
 			      	}
 		});
    };
@@ -31,13 +32,24 @@ exports.joinClass = (req, res) =>	{
 	        	 res.status(400).json({ error });
 	    	}
 	    	else{
-	    		existingClass.enrollStudents.push(studentId);
-			    existingClass.save((err, updateClass) => {
-					if (err) {
-					    res.status(400).json({ success: false, msg: "Failed to Enrol the student" });
-					} else {
-						res.status(200).json({ success: true, msg: "Student Enrol Successfully",updateClass: updateClass});
-					    }
+	    		existingClass.findOne({enrollStudents:studentId}).exec((error, existingUser) => {
+					if (error) {
+			        	 return res.status(400).json({ error });
+			    	}
+			    	if(existingUser)
+			    	{
+			    		return res.status(400).json({ error: "Student Already Enrolled"});
+			    	}
+			    	else{
+			    		existingClass.enrollStudents.push(studentId);
+					    existingClass.save((err, updateClass) => {
+							if (err) {
+							    res.status(400).json({ success: false, msg: "Failed to Enrol the student" });
+							} else {
+								res.status(200).json({ success: true, msg: "Student Enrol Successfully"});
+							    }
+						});
+			    	}
 				});
 	    	}
 		});
@@ -45,23 +57,23 @@ exports.joinClass = (req, res) =>	{
 
 exports.studentClasses = (req, res) =>	{
 		const studentId = req.params.studentId;
-		classroom.find({enrollStudents:studentId}).populate("collegeUser").exec((error, studentClasses) => {
+		classroom.find({enrollStudents:studentId}).populate("enrollStudents").populate("createdBy").exec((error, studentClasses) => {
 			if (error) {
 	        	 res.status(400).json({ error });
 	    	}
 	    	else{
-	    		res.status(200).json({ success: true, msg: "Student Classes",studentClasses: studentClasses});
+	    		res.status(200).json({ success: true, msg: "Student Classes",classes: studentClasses});
 	    	}
 		});
    };
 exports.teacherClasses = (req, res) =>	{
 		const teacherId = req.params.teacherId;
-		classroom.find({createdBy:teacherId}).populate("collegeUser").exec((error, teacherClasses) => {
+		classroom.find({createdBy:teacherId}).populate("enrollStudents").populate("createdBy").exec((error, teacherClasses) => {
 			if (error) {
 	        	 res.status(400).json({ error });
 	    	}
 	    	else{
-	    		res.status(200).json({ success: true, msg: "Teacher Classes",teacherClasses: teacherClasses});
+	    		res.status(200).json({ success: true, msg: "Teacher Classes",classes: teacherClasses});
 	    	}
 		});
    };
@@ -80,7 +92,7 @@ exports.uploadAssignment = (req, res) =>	{
 					if (err) {
 					    res.status(400).json({ success: false, msg: "Failed to upload the assignment" });
 					} else {
-						res.status(200).json({ success: true, msg: "Assignment Upload Successfully",existingClass: existingClass});
+						res.status(200).json({ success: true, msg: "Assignment Upload Successfully"});
 					    }
 				});
 	    	}
@@ -100,35 +112,21 @@ exports.uploadResult = (req, res) =>	{
 					if (err) {
 					    res.status(400).json({ success: false, msg: "Failed to upload the result" });
 					} else {
-						res.status(200).json({ success: true, msg: "Result Upload Successfully",existingClass: existingClass});
+						res.status(200).json({ success: true, msg: "Result Upload Successfully"});
 					    }
 				});
 	    	}
 		});
    };
-exports.classAssignments = (req, res) =>	{
+exports.classInfo = (req, res) =>	{
 
 		const classId = req.params.classId;
-		classroom.findById(classId).exec((error, existingClass) =>{
+		classroom.findById(classId).populate("enrollStudents").populate("createdBy").exec((error, existingClass) =>{
 			if (error) {
 	        	 res.status(400).json({ error });
 	    	}
 	    	else{
-	    		let assignmentList = existingClass.assignments;
-				res.status(200).json({ success: true, msg: "Assignments fetch Successfully",assignmentList:assignmentList});
-	    	}
-		});
-   };
-exports.classResults = (req, res) =>	{
-
-		const classId = req.params.classId;
-		classroom.findById(classId).exec((error, existingClass) =>{
-			if (error) {
-	        	 res.status(400).json({ error });
-	    	}
-	    	else{
-	    		let resultList = existingClass.results;
-				res.status(200).json({ success: true, msg: "Assignments fetch Successfully",resultList:resultList});
+				res.status(200).json({ success: true, msg: "classInfo fetch Successfully",classInfo:existingClass});
 	    	}
 		});
    };
