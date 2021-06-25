@@ -2,6 +2,9 @@ const express = require("express");
 const { collegeUser } = require("../models/user");
 const jwt = require("jsonwebtoken");
 
+const ACCESS_TOKEN_SECRET = "thisIsAccessTokenSecretKey";
+const REFRESH_TOKEN_SECRET = "thisIsRefreshTokenSecretKey";
+
 exports.register = (req, res) => {
     const { user } = req.body;
     let newUser;
@@ -72,14 +75,14 @@ exports.login = (req, res) => {
                     if (isMatch && !err) {
                         const accessToken = jwt.sign(
                             { email: userFound.email },
-                            process.env.ACCESS_TOKEN_SECRET,
+                            ACCESS_TOKEN_SECRET,
                             {
                                 expiresIn: "600s",
                             }
                         );
                         const refreshToken = jwt.sign(
                             { email: userFound.email },
-                            process.env.REFRESH_TOKEN_SECRET,
+                            REFRESH_TOKEN_SECRET,
                             {
                                 expiresIn: "7d",
                             }
@@ -104,14 +107,14 @@ exports.login = (req, res) => {
 exports.refresh = (req, res, next) => {
     const refreshToken = req.body.token;
     if (!refreshToken) {
-        return res.json({ message: "Refresh token not found." });
+        return res.json({ succes: false, msg: "Refresh token not found." });
     }
 
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
         if (!err) {
             const accessToken = jwt.sign(
                 { email: user.email },
-                process.env.ACCESS_TOKEN_SECRET,
+                ACCESS_TOKEN_SECRET,
                 {
                     expiresIn: "600s",
                 }
@@ -120,7 +123,7 @@ exports.refresh = (req, res, next) => {
         } else {
             return res.json({
                 success: false,
-                message: "invalid refresh token",
+                msg: "invalid refresh token",
             });
         }
     });
@@ -133,7 +136,7 @@ exports.getInfo = (req, res) => {
         if (!userFound) {
             res.status(400).send({
                 success: false,
-                message: "User not found",
+                msg: "User not found",
             });
         } else {
             res.send(userFound);
