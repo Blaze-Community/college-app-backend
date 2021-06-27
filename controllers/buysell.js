@@ -11,11 +11,10 @@ exports.addItem = (req ,res) => {
         sellerName:item.sellerName,
         sellerRoom:item.sellerRoom,
         sellerContact:item.sellerContact,
-        email:item.email
+        email:req.user.email
     });
     newItem.save(function(err,item){
         if(err){
-            console.log(err);
             res.status(400).json({ success: false, msg: "Failed to save the item" });
         }
         else{
@@ -25,14 +24,14 @@ exports.addItem = (req ,res) => {
 };
 
 exports.myItems = (req ,res) => {
-    const  email = req.headers.email;
+    const  email = req.user.email;
     buysell.find({email: email}).exec((err,list) => {
         if(err)
         {
             res.status(400).json({ err });
         }
         else 
-        {   res.status(200).json(list);
+        {   res.status(200).json({success: true, list:list});
         }
     });
 };
@@ -44,7 +43,7 @@ exports.allItems = (req , res) => {
             res.status(400).json({ success: false, msg: "Failed to retrive the item" });
         }
         else{
-           res.status(200).send(list);
+           res.status(200).json({success: true, list:list});
         }
     });
 }
