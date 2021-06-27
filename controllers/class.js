@@ -146,7 +146,6 @@ exports.deleteClass = (req, res) =>	{
 exports.uploadMessage = (req ,res) => {
 	const message = { message : req.body.message };
 	const classId = req.body.classId;
-	// console.log(`some sent a message to ${classId} and ${message}`);
 	classroom.findById(classId).exec((error, existingClass) =>{
 		if (error) {
 			 res.status(400).json({ error });
@@ -155,12 +154,32 @@ exports.uploadMessage = (req ,res) => {
 			existingClass.messages.push(message);
 			existingClass.save((err, updateClass) => {
 				if (err) {
-					console.log(err);
-					res.status(400).json({ success: false, msg: "Failed to upload the assignment" });
+					res.status(400).json({ success: false, msg: "Failed to upload the message" });
 				} else {
 					res.status(200).json({ success: true, msg: "message Upload Successfully"});
 					}
 			});
+		}
+	});
+}
+
+exports.deleteMessage = (req,res) => {
+	const msgId = req.body.msgId;
+	const classId = req.body.classId;
+	classroom.findById(classId).exec((error,existingClass) => {
+		if(error)
+		{
+			res.status(400).json({ error });
+		}
+		else{
+			existingClass.messages.pull({"_id":msgId});
+			existingClass.save((err, updateClass) => {
+				if (err) {
+					res.status(400).json({ success: false, msg: "Failed to delete the message" });
+				} else {
+					res.status(200).json({ success: true, msg: "message deleted Successfully"});
+					}
+			})
 		}
 	});
 }

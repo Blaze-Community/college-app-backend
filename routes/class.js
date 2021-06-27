@@ -1,5 +1,5 @@
 const express = require('express');
-const { createClass,joinClass,studentClasses,teacherClasses,uploadAssignment,uploadResult,classInfo,deleteClass, uploadMessage} = require('../controllers/class');
+const { createClass,joinClass,studentClasses,teacherClasses,uploadAssignment,uploadResult,classInfo,deleteClass, uploadMessage ,deleteMessage} = require('../controllers/class');
 const { validateLoginRequest, isRequestValidated, validateRegisterRequest } = require('../validators/auth');
 const router = express.Router();
 
@@ -12,5 +12,6 @@ router.post("/uploadResult",isRequestValidated, uploadResult);
 router.get("/classInfo/:classId",isRequestValidated, classInfo);
 router.delete("/deleteClass",isRequestValidated, deleteClass);
 router.post("/uploadMessage",uploadMessage);
+router.delete("/deleteMessage",deleteMessage);
 
 module.exports = router;
