@@ -1,6 +1,6 @@
 const express = require('express');
 const { createClass,joinClass,classes,uploadAssignment,uploadResult,classInfo,deleteClass} = require('../controllers/class');
-const { validateLoginRequest, isRequestValidated, validateRegisterRequest } = require('../validators/auth');
+const { isRequestValidated } = require('../validators/auth');
 const { requireSignin } = require("../middlewares/auth");
 const router = express.Router();
 

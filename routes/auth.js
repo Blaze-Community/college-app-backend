@@ -20,8 +20,8 @@ router.post("/register", validateRegisterRequest, isRequestValidated, register);
 
 router.post("/refresh", refresh);
 
-router.get("/userInfo", requireSignin, userInfo);
+router.get("/userInfo", requireSignin, isRequestValidated,userInfo);
 
-router.post("/editprofile", requireSignin, editProfile);
+router.post("/editprofile", requireSignin, isRequestValidated,editProfile);
 
 module.exports = router;
