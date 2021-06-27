@@ -30,6 +30,17 @@ const resultSchema = mongoose.Schema(
 	},
 	 { timestamps: true }
 );
+
+const messageSchema = mongoose.Schema(
+	{
+		message:{
+			type :String,
+			trim:true
+		},
+	},
+	{ timestamps : true}
+);
+
 const classSchema = mongoose.Schema(
 	{
 	    enrolKey: {
@@ -41,6 +52,7 @@ const classSchema = mongoose.Schema(
 	      type: String,
 	      trim: true,
 	    },
+		messages:[messageSchema],
 	    assignments:[assignmentSchema],
 	    results:[resultSchema],
 	    enrollStudents:[{

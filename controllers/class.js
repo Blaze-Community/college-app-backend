@@ -142,3 +142,25 @@ exports.deleteClass = (req, res) =>	{
 	    	}
 		});
    };
+
+exports.uploadMessage = (req ,res) => {
+	const message = { message : req.body.message };
+	const classId = req.body.classId;
+	// console.log(`some sent a message to ${classId} and ${message}`);
+	classroom.findById(classId).exec((error, existingClass) =>{
+		if (error) {
+			 res.status(400).json({ error });
+		}
+		else{
+			existingClass.messages.push(message);
+			existingClass.save((err, updateClass) => {
+				if (err) {
+					console.log(err);
+					res.status(400).json({ success: false, msg: "Failed to upload the assignment" });
+				} else {
+					res.status(200).json({ success: true, msg: "message Upload Successfully"});
+					}
+			});
+		}
+	});
+}
