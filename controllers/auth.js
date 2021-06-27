@@ -74,20 +74,20 @@ exports.login = (req, res) => {
                 userFound.comparePassword(user.password, (err, isMatch) => {
                     if (isMatch && !err) {
                         const accessToken = jwt.sign(
-                            { email: userFound.email },
-                            process.env.ACCESS_TOKEN_SECRET,
+                            { user : userFound },
+                                ACCESS_TOKEN_SECRET,
                             {
                                 expiresIn: "600s",
                             }
                         );
                         const refreshToken = jwt.sign(
-                            { email: userFound.email },
-                            process.env.REFRESH_TOKEN_SECRET,
+                            { user : userFound },
+                                REFRESH_TOKEN_SECRET,
                             {
                                 expiresIn: "1y",
                             }
                         );
-                        res.json({
+                        res.status(200).json({
                             success: true,
                             accessToken: accessToken,
                             refreshToken: refreshToken,
@@ -119,14 +119,14 @@ exports.refresh = (req, res, next) => {
                     expiresIn: "600s",
                 }
             );
-            return res.json({ success: true, accessToken: accessToken });
+            return res.status(400).json({ success: true, accessToken: accessToken });
         } else if (err.message == "jwt expired") {
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 msg: "Refresh token expired, Please Login again!",
             });
         } else {
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 msg: "invalid refresh token",
             });
@@ -134,7 +134,7 @@ exports.refresh = (req, res, next) => {
     });
 };
 
-exports.getInfo = (req, res) => {
+exports.userInfo = (req, res) => {
     console.log(req.user);
     collegeUser.findOne({ email: req.user.email }, (err, userFound) => {
         if (err) throw err;
@@ -144,7 +144,7 @@ exports.getInfo = (req, res) => {
                 msg: "User not found",
             });
         } else {
-            res.send(userFound);
+            res.status(200).send(userFound);
         }
     });
 };
@@ -161,8 +161,9 @@ exports.editProfile = (req, res) => {
             throw err;
         }
     });
-    res.send({
+    res.status(200).send({
         success: true,
+        msg : "Profile Updated Successfully",
         info: {
             profileName: req.body.profileName,
             profilePhotoUri: req.body.profilePhotoUri,
