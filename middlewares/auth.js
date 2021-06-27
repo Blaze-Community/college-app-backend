@@ -8,10 +8,10 @@ exports.requireSignin = (req, res, next) => {
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(
             token,
-            ACCESS_TOKEN_SECRET,
-            async (err, user) => {
+            process.env.ACCESS_TOKEN_SECRET,
+            async (err, data) => {
                 if (user) {
-                    req.user = user.user;
+                    req.user = data.user;
                 } else if (err.message === "jwt expired") {
                     return res.json({
                         success: false,

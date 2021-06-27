@@ -75,14 +75,14 @@ exports.login = (req, res) => {
                     if (isMatch && !err) {
                         const accessToken = jwt.sign(
                             { user : userFound },
-                                ACCESS_TOKEN_SECRET,
+                                process.env.ACCESS_TOKEN_SECRET,
                             {
                                 expiresIn: "600s",
                             }
                         );
                         const refreshToken = jwt.sign(
                             { user : userFound },
-                                REFRESH_TOKEN_SECRET,
+                                process.env.REFRESH_TOKEN_SECRET,
                             {
                                 expiresIn: "1y",
                             }
@@ -110,10 +110,10 @@ exports.refresh = (req, res, next) => {
         return res.json({ success: false, msg: "Refresh token not found." });
     }
 
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
         if (!err) {
             const accessToken = jwt.sign(
-                { email: user.email },
+                { user : data.user },
                 process.env.ACCESS_TOKEN_SECRET,
                 {
                     expiresIn: "600s",
