@@ -8,6 +8,6 @@ const {
 router.post("/college-olx/addItem",requireSignin,isRequestValidated,addItem);
 router.get("/college-olx/myItem",requireSignin,isRequestValidated,myItems);
 router.get("/college-olx/allItems",requireSignin,isRequestValidated,allItems);
-router.post("/college-olx/deleteItem",requireSignin,isRequestValidated,deleteItem);
+router.delete("/college-olx/deleteItem",requireSignin,isRequestValidated,deleteItem);
 
 module.exports = router;

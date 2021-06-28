@@ -84,7 +84,7 @@ exports.uploadAssignment = (req, res) =>	{
 	        	 res.status(400).json({ error });
 	    	}
 	    	else{
-	    		existingClass.assignments.push(assignment);
+	    		existingClass.assignments.unshift(assignment);
 			    existingClass.save((err, updateClass) => {
 					if (err) {
 					    res.status(400).json({ success: false, msg: "Failed to upload the assignment" });
@@ -104,7 +104,7 @@ exports.uploadResult = (req, res) =>	{
 	        	 res.status(400).json({ error });
 	    	}
 	    	else{
-	    		existingClass.results.push(result);
+	    		existingClass.results.unshift(result);
 			    existingClass.save((err, updateClass) => {
 					if (err) {
 					    res.status(400).json({ success: false, msg: "Failed to upload the result" });
@@ -148,7 +148,7 @@ exports.uploadMessage = (req ,res) => {
 			 res.status(400).json({ error });
 		}
 		else{
-			existingClass.messages.push(message);
+			existingClass.messages.unshift(message);
 			existingClass.save((err, updateClass) => {
 				if (err) {
 					res.status(400).json({ success: false, msg: "Failed to upload the message" });

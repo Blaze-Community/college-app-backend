@@ -26,12 +26,14 @@ exports.addItem = (req ,res) => {
 exports.myItems = (req ,res) => {
     const  email = req.user.email;
     buysell.find({email: email}).exec((err,list) => {
+        console.log(list);
         if(err)
         {
             res.status(400).json({ err });
         }
         else 
-        {   res.status(200).json({success: true, list:list});
+        {  
+            res.status(200).json({success: true, list:list});
         }
     });
 };
@@ -50,13 +52,12 @@ exports.allItems = (req , res) => {
 
 exports.deleteItem = (req, res) => {
     const itemId = req.body.id;
-    console.log(itemId);
     buysell.findByIdAndDelete({_id:itemId}).exec((err) => {
         if(err){
-            console.log(err);
             res.status(400).json({ success: false, msg: "Failed to delete the item" });
         }
         else{
+            console.log("Successfully deleted item");
            res.status(200).json({ success: true, msg: "Successfully deleted item"});
         }
     })
