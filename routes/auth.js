@@ -3,7 +3,7 @@ const {
     login,
     register,
     refresh,
-    getInfo,
+    userInfo,
     editProfile,
 } = require("../controllers/auth");
 const { requireSignin, upload } = require("../middlewares/auth");
@@ -20,8 +20,8 @@ router.post("/register", validateRegisterRequest, isRequestValidated, register);
 
 router.post("/refresh", refresh);
 
-router.get("/getinfo", requireSignin, getInfo);
+router.get("/userInfo", requireSignin, isRequestValidated,userInfo);
 
-router.post("/editprofile", requireSignin, editProfile);
+router.post("/editprofile", requireSignin, isRequestValidated,editProfile);
 
 module.exports = router;
