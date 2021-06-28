@@ -50,7 +50,7 @@ exports.joinClass = (req, res) =>	{
    };
 
 exports.classes = (req, res) =>	{
-		console.log(req.user._id);
+		console.log(req.user);
 		if(req.user.role == "student"){
 			const studentId = req.user._id;
 			classroom.find({enrollStudents:studentId}).populate("enrollStudents").populate("createdBy").exec((error, studentClasses) => {

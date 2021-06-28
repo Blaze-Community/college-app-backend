@@ -10,7 +10,7 @@ exports.requireSignin = (req, res, next) => {
             token,
             process.env.ACCESS_TOKEN_SECRET,
             async (err, data) => {
-                if (user) {
+                if (data) {
                     req.user = data.user;
                 } else if (err.message === "jwt expired") {
                     return res.json({
