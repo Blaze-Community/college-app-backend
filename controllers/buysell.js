@@ -26,12 +26,13 @@ exports.addItem = (req ,res) => {
 exports.myItems = (req ,res) => {
     const  email = req.user.email;
     buysell.find({email: email}).exec((err,list) => {
+        console.log(list);
         if(err)
         {
             res.status(400).json({ err });
         }
         else 
-        {   console.log(list);
+        {  
             res.status(200).json({success: true, list:list});
         }
     });
