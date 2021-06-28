@@ -80,6 +80,7 @@ exports.login = (req, res) => {
                                 expiresIn: "600s",
                             }
                         );
+
                         const refreshToken = jwt.sign(
                             { user : userFound },
                                 process.env.REFRESH_TOKEN_SECRET,
@@ -119,7 +120,7 @@ exports.refresh = (req, res, next) => {
                     expiresIn: "600s",
                 }
             );
-            return res.status(400).json({ success: true, accessToken: accessToken });
+            return res.status(200).json({ success: true, accessToken: accessToken });
         } else if (err.message == "jwt expired") {
             return res.status(400).json({
                 success: false,
