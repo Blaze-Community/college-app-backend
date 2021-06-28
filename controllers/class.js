@@ -159,6 +159,47 @@ exports.uploadMessage = (req ,res) => {
 		}
 	});
 }
+exports.deleteAssignment = (req,res) => {
+	const assignmentId = req.body.assignmentId;
+	const classId = req.body.classId;
+	classroom.findById(classId).exec((error,existingClass) => {
+		if(error)
+		{
+			res.status(400).json({ error });
+		}
+		else{
+			existingClass.assignments.pull({"_id":assignmentId});
+			existingClass.save((err, updateClass) => {
+				if (err) {
+					res.status(400).json({ success: false, msg: "Failed to delete the assignment" });
+				} else {
+					res.status(200).json({ success: true, msg: "assignment deleted Successfully"});
+					}
+			})
+		}
+	});
+}
+
+exports.deleteResult = (req,res) => {
+	const resultId = req.body.resultId;
+	const classId = req.body.classId;
+	classroom.findById(classId).exec((error,existingClass) => {
+		if(error)
+		{
+			res.status(400).json({ error });
+		}
+		else{
+			existingClass.results.pull({"_id":resultId});
+			existingClass.save((err, updateClass) => {
+				if (err) {
+					res.status(400).json({ success: false, msg: "Failed to delete the message" });
+				} else {
+					res.status(200).json({ success: true, msg: "message deleted Successfully"});
+					}
+			})
+		}
+	});
+}
 
 exports.deleteMessage = (req,res) => {
 	const msgId = req.body.msgId;
