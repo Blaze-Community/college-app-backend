@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const healthcheck = require("./routes/api");
 const auth = require("./routes/auth");
 const clas = require("./routes/class");
+const timetable = require("./routes/timetable");
+const buysell = require("./routes/buysell");
 const helmet = require("helmet");
 const { student, teacher } = require("./models/user");
 const bodyParser = require("body-parser");
@@ -98,6 +100,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", healthcheck);
 app.use("/api", auth);
 app.use("/api", clas);
+app.use("/api", buysell);
+app.use("/api", timetable);
 
 app.use((err, req, res, next) => {
   console.error(err);
