@@ -1,15 +1,17 @@
 const express = require('express');
-const { createClass,joinClass,classes,uploadAssignment,uploadResult,classInfo,deleteClass} = require('../controllers/class');
-const { isRequestValidated } = require('../validators/auth');
-const { requireSignin } = require("../middlewares/auth");
+const { createClass,joinClass,studentClasses,teacherClasses,uploadAssignment,uploadResult,classInfo,deleteClass, uploadMessage ,deleteMessage} = require('../controllers/class');
+const { validateLoginRequest, isRequestValidated, validateRegisterRequest } = require('../validators/auth');
 const router = express.Router();
 
-router.post("/createClass",isRequestValidated, requireSignin ,createClass);
-router.post("/joinClass",isRequestValidated, requireSignin ,joinClass);
-router.get("/classes",isRequestValidated, requireSignin ,classes);
-router.post("/uploadAssignment",isRequestValidated, requireSignin , uploadAssignment);
-router.post("/uploadResult",isRequestValidated, requireSignin ,uploadResult);
-router.get("/classInfo/:classId",isRequestValidated, requireSignin ,classInfo);
-router.delete("/deleteClass",isRequestValidated, requireSignin ,deleteClass);
+router.post("/createClass",isRequestValidated, createClass);
+router.post("/joinClass",isRequestValidated, joinClass);
+router.get("/studentClasses/:studentId",isRequestValidated, studentClasses);
+router.get("/teacherClasses/:teacherId",isRequestValidated, teacherClasses);
+router.post("/uploadAssignment",isRequestValidated, uploadAssignment);
+router.post("/uploadResult",isRequestValidated, uploadResult);
+router.get("/classInfo/:classId",isRequestValidated, classInfo);
+router.delete("/deleteClass",isRequestValidated, deleteClass);
+router.post("/uploadMessage",uploadMessage);
+router.delete("/deleteMessage",deleteMessage);
 
 module.exports = router;
