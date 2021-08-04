@@ -257,24 +257,25 @@ exports.getAttendence = (req,res) => {
 					
 				}
 			});
-			// if(exist == false){
-			// 	const newAttendence = [];
-			// 	existingClass.enrollStudents.forEach((x)=>{
-			// 		newAttendence.push({
-			// 				student:x,
-			// 				present:false,
-			// 				absent:false
-			// 			});
-			// 		});
-			// 	existingClass.attendence.push({list:newAttendence});
-			// 	existingClass.save((err, updateClass) => {
-			// 		if (err) {
-			// 			res.status(400).json({ success: false, msg: "Failed to add the attendence" });
-			// 		} else {
-			// 			res.status(200).json({ success: true, msg: "attendence add Successfully",attendence:newAttendence});
-			// 			}
-			// 		});
-			// }
+			console.log(exist);
+			if(exist == false){
+				const newAttendence = [];
+				existingClass.enrollStudents.forEach((x)=>{
+					newAttendence.push({
+							student:x,
+							present:false,
+							absent:false
+						});
+					});
+				existingClass.attendence.push({list:newAttendence});
+				existingClass.save((err, updateClass) => {
+					if (err) {
+						res.status(400).json({ success: false, msg: "Failed to add the attendence" });
+					} else {
+						res.status(200).json({ success: true, msg: "attendence add Successfully",attendence:newAttendence});
+						}
+					});
+			}
 		}
 	});
 }
