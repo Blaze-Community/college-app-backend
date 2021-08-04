@@ -1,6 +1,7 @@
 const express = require("express");
 const { classroom } = require("../models/class");
 const { v4: uuidv4 } = require("uuid");
+const moment = require("moment");
 
 exports.createClass = (req, res) =>	{
 		const { clas } = req.body;
@@ -37,6 +38,16 @@ exports.joinClass = (req, res) =>	{
 	    		}
 	    		else{
 			    		existingClass.enrollStudents.push(studentId);
+						existingClass.attendence.forEach((x)=>{
+							if(x.createdAt == Date.now()){
+								x.list.push({
+									student:studentId,
+									present:false,
+									absent:false
+								});
+								
+							}
+						});
 					    existingClass.save((err, updateClass) => {
 							if (err) {
 							    res.status(400).json({ success: false, msg: "Failed to Enrol the student" });
@@ -218,6 +229,62 @@ exports.deleteMessage = (req,res) => {
 					res.status(200).json({ success: true, msg: "message deleted Successfully"});
 					}
 			})
+		}
+	});
+}
+
+exports.getAttendence = (req,res) => {
+	const classId = req.params.classId;
+	const date = req.params.date;
+	classroom.findById(classId).exec((error, existingClass) =>{
+		if (error) {
+			 res.status(400).json({ error });
+		}
+		else{
+
+			existingClass.attendence.forEach((x)=>{
+				if(x.createdAt == date){
+					return res.status(200).json({ success: true, msg: "attendence fetch Successfully",attendence:x.list});
+					
+				}
+			})
+			const newAttendence = [];
+			existingClass.enrollStudents.forEach((x)=>{
+				newAttendence.push({
+						student:x,
+						present:false,
+						absent:false
+					});
+				});
+			existingClass.attendence.push({list:newAttendence});
+			existingClass.save((err, updateClass) => {
+				if (err) {
+					console.log(err);
+					res.status(400).json({ success: false, msg: "Failed to add the attendence" });
+				} else {
+					res.status(200).json({ success: true, msg: "attendence add Successfully",attendence:newAttendence});
+					}
+				})
+		}
+	});
+}
+
+exports.updateAttendence = (req,res) => {
+	const attendenceList = { list:req.body.list };
+	const classId = req.body.classId;
+	classroom.findById(classId).exec((error, existingClass) =>{
+		if (error) {
+			 res.status(400).json({ error });
+		}
+		else{
+			existingClass.attendence.push(attendenceList);
+			existingClass.save((err, updateClass) => {
+				if (err) {
+					res.status(400).json({ success: false, msg: "Failed to add the attendence" });
+				} else {
+					res.status(200).json({ success: true, msg: "attendence Upload Successfully"});
+					}
+			});
 		}
 	});
 }
