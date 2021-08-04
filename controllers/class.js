@@ -235,12 +235,21 @@ exports.deleteMessage = (req,res) => {
 exports.getAttendence = (req,res) => {
 	const classId = req.params.classId;
 	const date = req.params.date;
-	classroom.findById(classId).exec((error, existingClass) =>{
+	classroom.findById(classId).populate({  
+		path: 'attendence',
+	    populate: {
+	       path: 'list',
+	       populate:{
+	       	path:'student'
+	       }
+	     } 
+     }).exec((error, existingClass) =>{
 		if (error) {
 			 res.status(400).json({ error });
 		}
 		else{
 			var exist = false;
+			console.log(existingClass);
 			existingClass.attendence.forEach((x)=>{
 				if(moment(x.createdAt).format("DD-MM-YYYY") == date){
 					exist = true;
@@ -248,24 +257,24 @@ exports.getAttendence = (req,res) => {
 					
 				}
 			});
-			if(exist == false){
-				const newAttendence = [];
-				existingClass.enrollStudents.forEach((x)=>{
-					newAttendence.push({
-							student:x,
-							present:false,
-							absent:false
-						});
-					});
-				existingClass.attendence.push({list:newAttendence});
-				existingClass.save((err, updateClass) => {
-					if (err) {
-						res.status(400).json({ success: false, msg: "Failed to add the attendence" });
-					} else {
-						res.status(200).json({ success: true, msg: "attendence add Successfully",attendence:newAttendence});
-						}
-					});
-			}
+			// if(exist == false){
+			// 	const newAttendence = [];
+			// 	existingClass.enrollStudents.forEach((x)=>{
+			// 		newAttendence.push({
+			// 				student:x,
+			// 				present:false,
+			// 				absent:false
+			// 			});
+			// 		});
+			// 	existingClass.attendence.push({list:newAttendence});
+			// 	existingClass.save((err, updateClass) => {
+			// 		if (err) {
+			// 			res.status(400).json({ success: false, msg: "Failed to add the attendence" });
+			// 		} else {
+			// 			res.status(200).json({ success: true, msg: "attendence add Successfully",attendence:newAttendence});
+			// 			}
+			// 		});
+			// }
 		}
 	});
 }
