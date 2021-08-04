@@ -39,7 +39,7 @@ exports.joinClass = (req, res) =>	{
 	    		else{
 			    		existingClass.enrollStudents.push(studentId);
 						existingClass.attendence.forEach((x)=>{
-							if(x.createdAt == Date.now()){
+							if(x.createdAt == "2021-08-04T08:41:12.250+00:00"){
 								x.list.push({
 									student:studentId,
 									present:false,

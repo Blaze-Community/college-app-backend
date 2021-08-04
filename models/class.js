@@ -40,20 +40,25 @@ const messageSchema = mongoose.Schema(
 	},
 	{ timestamps : true}
 );
-const attendenceSchema = mongoose.Schema(
+const attendenceListSchema = mongoose.Schema(
 	{
-	   	student:{
-	    	type: mongoose.Schema.Types.ObjectId,
-        ref: "collegeUser",
-	    },
-	    absent: {
-	      type: Boolean,
-	      default: false
-	    },
-	   	present: {
-	      type: Boolean,
-	      default: false
-	    },
+	   	list:[
+	   		{
+			   	student:{
+			    	type: mongoose.Schema.Types.ObjectId,
+		        ref: "collegeUser",
+			    },
+			    absent: {
+			      type: Boolean,
+			      default: false
+			    },
+			   	present: {
+			      type: Boolean,
+			      default: false
+			    },
+	   		},
+	   		{ timestamps: true }
+	    ]
 	},
 	 { timestamps: true }
 );
@@ -71,12 +76,7 @@ const classSchema = mongoose.Schema(
 			messages:[messageSchema],
 	    assignments:[assignmentSchema],
 	    results:[resultSchema],
-	    attendence:[
-		    	{	
-		    		list:[assignmentSchema],
-		    	},
-		    	{ timestamps: true }
-	    	],
+	    attendence:[attendenceListSchema],
 	    enrollStudents:[{
 	    	type: mongoose.Schema.Types.ObjectId,
         ref: "collegeUser",
