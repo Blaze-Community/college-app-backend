@@ -1,6 +1,7 @@
 const express = require("express");
 const { collegeUser } = require("../models/user");
 const jwt = require("jsonwebtoken");
+const { hashPassword } = require("./hashPassword");
 
 // const ACCESS_TOKEN_SECRET = "thisIsAccessTokenSecretKey";
 // const REFRESH_TOKEN_SECRET = "thisIsRefreshTokenSecretKey";
@@ -74,16 +75,16 @@ exports.login = (req, res) => {
                 userFound.comparePassword(user.password, (err, isMatch) => {
                     if (isMatch && !err) {
                         const accessToken = jwt.sign(
-                            { user : userFound },
-                                process.env.ACCESS_TOKEN_SECRET,
+                            { user: userFound },
+                            process.env.ACCESS_TOKEN_SECRET,
                             {
                                 expiresIn: "600s",
                             }
                         );
 
                         const refreshToken = jwt.sign(
-                            { user : userFound },
-                                process.env.REFRESH_TOKEN_SECRET,
+                            { user: userFound },
+                            process.env.REFRESH_TOKEN_SECRET,
                             {
                                 expiresIn: "1y",
                             }
@@ -114,13 +115,15 @@ exports.refresh = (req, res, next) => {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
         if (!err) {
             const accessToken = jwt.sign(
-                { user : data.user },
+                { user: data.user },
                 process.env.ACCESS_TOKEN_SECRET,
                 {
                     expiresIn: "600s",
                 }
             );
-            return res.status(200).json({ success: true, accessToken: accessToken });
+            return res
+                .status(200)
+                .json({ success: true, accessToken: accessToken });
         } else if (err.message == "jwt expired") {
             return res.status(400).json({
                 success: false,
@@ -164,10 +167,66 @@ exports.editProfile = (req, res) => {
     });
     res.status(200).send({
         success: true,
-        msg : "Profile Updated Successfully",
+        msg: "Profile Updated Successfully",
         info: {
             profileName: req.body.profileName,
             profilePhotoUri: req.body.profilePhotoUri,
         },
     });
+};
+
+exports.changePassword = (req, res) => {
+    collegeUser.findOne(
+        {
+            email: req.user.email,
+        },
+        (err, userFound) => {
+            if (err) {
+                console.log(err);
+                return res
+                    .status(500)
+                    .json({ success: true, msg: err.message });
+            }
+            if (!userFound) {
+                res.status(400).send({
+                    success: false,
+                    msg: "Authentication Failed, User not found",
+                });
+            } else {
+                userFound.comparePassword(
+                    req.body.oldPassword,
+                    async (err, isMatch) => {
+                        if (isMatch && !err) {
+                            const hashed = await hashPassword(
+                                req.body.newPassword
+                            );
+                            const newValues = {
+                                $set: {
+                                    password: hashed,
+                                },
+                            };
+                            collegeUser.updateOne(
+                                { email: req.user.email },
+                                newValues,
+                                (err, res) => {
+                                    if (err) {
+                                        throw err;
+                                    }
+                                }
+                            );
+                            res.send({
+                                success: true,
+                                msg: "password changed",
+                            });
+                        } else {
+                            return res.status(400).send({
+                                success: false,
+                                msg: "Old password you entered is wrong",
+                            });
+                        }
+                    }
+                );
+            }
+        }
+    );
 };
