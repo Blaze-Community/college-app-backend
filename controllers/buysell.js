@@ -26,7 +26,6 @@ exports.addItem = (req ,res) => {
 exports.myItems = (req ,res) => {
     const  email = req.user.email;
     buysell.find({email: email}).exec((err,list) => {
-        console.log(list);
         if(err)
         {
             res.status(400).json({ err });
@@ -41,7 +40,6 @@ exports.myItems = (req ,res) => {
 exports.allItems = (req , res) => {
     buysell.find({}).exec((err,list) => {
         if(err){
-            console.log(err);
             res.status(400).json({ success: false, msg: "Failed to retrive the item" });
         }
         else{

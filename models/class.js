@@ -40,6 +40,30 @@ const messageSchema = mongoose.Schema(
 	},
 	{ timestamps : true}
 );
+const attendenceListSchema = mongoose.Schema(
+	{
+	   	list:[
+	   		{
+			   	student:{
+			    	type: mongoose.Schema.Types.ObjectId,
+		        ref: "collegeUser",
+			    },
+			    absent: {
+			      type: Boolean,
+			      default: false
+			    },
+			   	present: {
+			      type: Boolean,
+			      default: false
+			    },
+	   		},
+	   		{ timestamps: true }
+	    ],
+	},
+	 { timestamps: true }
+);
+
+attendenceListSchema.path('createdAt').immutable(true);
 
 const classSchema = mongoose.Schema(
 	{
@@ -52,13 +76,15 @@ const classSchema = mongoose.Schema(
 	      type: String,
 	      trim: true,
 	    },
-		messages:[messageSchema],
+			messages:[messageSchema],
 	    assignments:[assignmentSchema],
 	    results:[resultSchema],
+	    attendence:[attendenceListSchema],
 	    enrollStudents:[{
 	    	type: mongoose.Schema.Types.ObjectId,
         ref: "collegeUser",
 	    }],
+
 	    subject: {
 	      type: String,
 	      trim: true,
@@ -79,6 +105,7 @@ const classSchema = mongoose.Schema(
 	},
 	 { timestamps: true }
 );
+
 const classroom = mongoose.model("classroom", classSchema, "Classes");
 
 module.exports = {
