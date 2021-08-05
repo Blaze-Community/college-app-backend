@@ -267,7 +267,7 @@ exports.getAttendence = (req,res) => {
 							absent:false
 						});
 					});
-				existingClass.attendence.push({list:newAttendence,createdAt:new Date('2021-08-06')});
+				existingClass.attendence.push({list:newAttendence,createdAt:new Date(moment(date,"DD-MM-YYYY").format("YYYY-MM-DD"))});
 				console.log(existingClass.attendence)
 				existingClass.save((err, updateClass) => {
 					if (err) {
