@@ -232,6 +232,44 @@ exports.deleteMessage = (req,res) => {
 	});
 }
 
+exports.getStudentAttendence = (req,res) => {
+	const classId = req.params.classId;
+	classroom.findById(classId).populate({  
+		path: 'attendence',
+	    populate: {
+	       path: 'list',
+	       populate:{
+	       	path:'student'
+	       }
+	     } 
+     }).exec((error, existingClass) =>{
+		if (error) {
+			 res.status(400).json({ error });
+		}
+		else{
+			if(req.user.role == "teacher"){
+				res.status(400).json({ success: false, msg: "student do not exist"});
+			}
+			else{
+				var attendenceList = [];
+				existingClass.attendence.forEach((x)=>{
+						x.list.forEach((y)=>{
+							if(y.student.rollno == req.user.rollno){
+								attendenceList.push({
+									"date":x.createdAt,
+									"absent":y.absent,
+									"present":y.present
+								});
+								return;
+							}
+						})
+				});
+				res.status(200).json({ success: true, msg: "student attendence fetch Successfully",attendence:attendenceList});
+			}
+		}
+	});
+}
+
 exports.getAttendence = (req,res) => {
 	const classId = req.params.classId;
 	const date = req.params.date;

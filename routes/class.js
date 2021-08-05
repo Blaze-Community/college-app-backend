@@ -1,5 +1,5 @@
 const express = require('express');
-const { createClass,joinClass,classes,uploadAssignment,uploadResult,classInfo,deleteClass, uploadMessage ,deleteMessage ,deleteAssignment ,deleteResult ,getAttendence,updateAttendence} = require('../controllers/class');
+const { createClass,joinClass,classes,uploadAssignment,uploadResult,classInfo,deleteClass, uploadMessage ,deleteMessage ,deleteAssignment ,deleteResult ,getAttendence,updateAttendence,getStudentAttendence} = require('../controllers/class');
 const { validateLoginRequest, isRequestValidated, validateRegisterRequest } = require('../validators/auth');
 const { requireSignin } = require("../middlewares/auth");
 const router = express.Router();
@@ -16,6 +16,7 @@ router.delete("/deleteMessage",isRequestValidated, requireSignin, deleteMessage)
 router.delete("/deleteAssignment",isRequestValidated, requireSignin,deleteAssignment);
 router.delete("/deleteResult",isRequestValidated, requireSignin,deleteResult);
 router.get("/getAttendence/:classId/:date",isRequestValidated, requireSignin,getAttendence);
+router.get("/getStudentAttendence/:classId",isRequestValidated, requireSignin,getStudentAttendence);
 router.post("/updateAttendence",isRequestValidated, requireSignin,updateAttendence);
 
 module.exports = router;
