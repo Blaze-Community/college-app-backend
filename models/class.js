@@ -58,10 +58,13 @@ const attendenceListSchema = mongoose.Schema(
 			    },
 	   		},
 	   		{ timestamps: true }
-	    ]
+	    ],
 	},
 	 { timestamps: true }
 );
+
+attendenceListSchema.path('createdAt').immutable(true);
+
 const classSchema = mongoose.Schema(
 	{
 	    enrolKey: {
