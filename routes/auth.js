@@ -1,4 +1,5 @@
 const express = require("express");
+const { reset } = require("nodemon");
 const {
     login,
     register,
@@ -6,6 +7,9 @@ const {
     userInfo,
     editProfile,
     changePassword,
+    resetPassword,
+    resetPasswordForm,
+    requestResetPassword,
 } = require("../controllers/auth");
 const { requireSignin, upload } = require("../middlewares/auth");
 const {
@@ -26,5 +30,13 @@ router.get("/userInfo", requireSignin, isRequestValidated, userInfo);
 router.post("/editprofile", requireSignin, isRequestValidated, editProfile);
 
 router.post("/changepassword", requireSignin, changePassword);
+
+router.post("/requestResetPassword", requestResetPassword);
+
+router.get("/resetPassword/:id/:token", resetPasswordForm);
+
+router.post("/resetPassword/:id/:token", resetPassword);
+
+// router.post("/resetPassword", resetPassword);
 
 module.exports = router;
