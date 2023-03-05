@@ -15,9 +15,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
-const URI =
-  process.env.URI ||
-  "mongodb+srv://blaze:IMuBa3q1GKPIjBOa@college-app.qjrif.mongodb.net/college-app?retryWrites=true&w=majority";
+const URI = process.env.URI;
 
 const connectWithRetry = (uris, options, maxAttempts = 5) => {
   connectWithRetry.timeout = connectWithRetry.timeout || 0;
