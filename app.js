@@ -3,12 +3,15 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const express = require("express");
+const config = require("./config/firebase.config");
+const { initializeApp } = require("firebase/app");
 const mongoose = require("mongoose");
 const healthcheck = require("./routes/api");
 const auth = require("./routes/auth");
 const clas = require("./routes/class");
 const timetable = require("./routes/timetable");
 const buysell = require("./routes/buysell");
+const bully = require("./routes/bully");
 const helmet = require("helmet");
 const { student, teacher } = require("./models/user");
 const bodyParser = require("body-parser");
@@ -42,6 +45,9 @@ connectWithRetry(URI, {
   useCreateIndex: true,
   useUnifiedTopology: true,
 });
+
+initializeApp(config.firebaseConfig);
+
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 app.use(helmet());
 app.use(
@@ -100,6 +106,7 @@ app.use("/api", auth);
 app.use("/api", clas);
 app.use("/api", buysell);
 app.use("/api", timetable);
+app.use("/api", bully);
 
 app.use((err, req, res, next) => {
   console.error(err);
