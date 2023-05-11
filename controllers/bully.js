@@ -8,10 +8,8 @@ const {
 } = require("firebase/storage");
 
 exports.uploadVideo = async (req, res) => {
-  console.log("Call");
   const storage = getStorage();
 
-  console.log(req.file);
   try {
     const storageRef = ref(
       storage,
@@ -55,4 +53,38 @@ exports.uploadVideo = async (req, res) => {
       .status(400)
       .send({ success: false, msg: "failed to upload the video" });
   }
+};
+
+exports.updateVideoStatus = (req, res) => {
+  const { bully_id, percentage, result } = req.body;
+
+  const newValues = {
+    $set: {
+      percentage: percentage,
+      result: result,
+    },
+  };
+  bully.findByIdAndUpdate(bully_id, newValues, (err, res) => {
+    if (err) {
+      if (err) {
+        throw err;
+      }
+    }
+  });
+  res.status(200).send({
+    success: true,
+    msg: "Status Updated Successfully",
+  });
+};
+
+exports.allVideos = (req, res) => {
+  bully.find({}).exec((err, list) => {
+    if (err) {
+      res
+        .status(400)
+        .json({ success: false, msg: "Failed to retrive the item" });
+    } else {
+      res.status(200).json({ success: true, list: list });
+    }
+  });
 };

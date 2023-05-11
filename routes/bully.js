@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { uploadVideo } = require("../controllers/bully");
+const {
+  uploadVideo,
+  allVideos,
+  updateVideoStatus,
+} = require("../controllers/bully");
 const { requireSignin } = require("../middlewares/auth");
 const { isRequestValidated } = require("../validators/auth");
 const multer = require("multer");
@@ -13,5 +17,8 @@ router.put(
   upload.single("file"),
   uploadVideo
 );
+
+router.get("/bully", allVideos);
+router.post("/bully", updateVideoStatus);
 
 module.exports = router;
