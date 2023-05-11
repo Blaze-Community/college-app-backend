@@ -6,6 +6,12 @@ const { isRequestValidated } = require("../validators/auth");
 const multer = require("multer");
 
 const upload = multer();
-router.post("/bully/upload", upload.single("file"), uploadVideo);
+router.put(
+  "/bully/upload",
+  requireSignin,
+  isRequestValidated,
+  upload.single("file"),
+  uploadVideo
+);
 
 module.exports = router;

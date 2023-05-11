@@ -34,11 +34,21 @@ exports.uploadVideo = async (req, res) => {
     // Grab the public url
     const downloadURL = await getDownloadURL(snapshot.ref);
 
-    return res.send({
-      message: "file uploaded to firebase storage",
-      name: req.file.originalname,
-      type: req.file.mimetype,
-      downloadURL: downloadURL,
+    let newItem = bully({
+      senderId: req.user._id,
+      videoURI: downloadURL,
+    });
+
+    newItem.save(function (err, item) {
+      if (err) {
+        res
+          .status(400)
+          .json({ success: false, msg: "Failed to save the item" });
+      } else {
+        res
+          .status(200)
+          .json({ success: true, msg: "Successfully Added", item: item });
+      }
     });
   } catch (error) {
     return res
