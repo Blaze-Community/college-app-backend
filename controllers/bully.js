@@ -38,7 +38,6 @@ exports.uploadVideo = async (req, res) => {
       senderId: req.user._id,
       videoURI: downloadURL,
     });
-
     newItem.save(function (err, item) {
       if (err) {
         res
@@ -51,6 +50,7 @@ exports.uploadVideo = async (req, res) => {
       }
     });
   } catch (error) {
+    console.log(error);
     return res
       .status(400)
       .send({ success: false, msg: "failed to upload the video" });

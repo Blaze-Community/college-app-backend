@@ -23,6 +23,4 @@ const bullySchema = mongoose.Schema(
 
 const bully = mongoose.model("bully", bullySchema, "Bully-Report");
 
-module.exports = {
-  bully: bully,
-};
+module.exports = bully;
